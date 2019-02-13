@@ -3,6 +3,7 @@ package com.example.andriodtweets
 import android.content.Intent
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v7.app.AlertDialog
 import android.text.Editable
 import android.text.TextWatcher
 import android.util.Log
@@ -10,6 +11,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
+import android.widget.Toast
 
 class MainActivity : AppCompatActivity()  {
 
@@ -39,6 +41,8 @@ class MainActivity : AppCompatActivity()  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        
+
         Log.d("MainActivity" , "on Create called" )
 
         username =findViewById(R.id.username)
@@ -55,7 +59,19 @@ class MainActivity : AppCompatActivity()  {
 
             val intent: Intent = Intent(this, TweetActivity::class.java)
             intent.putExtra("loaction", "Washington D.C.")
-            startActivity(intent)
+       //     startActivity(intent)
+
+
+            
+            AlertDialog.Builder(this).setTitle("Sorry").setMessage("couldnt find it")
+                .setPositiveButton("ok"){
+                    dialog, which ->   Toast.makeText(
+                    this,
+                    "This is a Toast message",
+                    Toast.LENGTH_SHORT
+                ).show()
+                }
+                .show()            
         }
     }
 
