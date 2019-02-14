@@ -41,14 +41,14 @@ class MainActivity : AppCompatActivity()  {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        
+
 
         Log.d("MainActivity" , "on Create called" )
 
         username =findViewById(R.id.username)
         password=findViewById(R.id.password)
         login=findViewById(R.id.login)
-       progressbar=findViewById(R.id.progressBar)
+        progressbar=findViewById(R.id.progressBar)
 
         username.addTextChangedListener(textWatcher)
         password.addTextChangedListener(textWatcher)
