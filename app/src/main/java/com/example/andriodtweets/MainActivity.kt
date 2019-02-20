@@ -57,9 +57,10 @@ class MainActivity : AppCompatActivity()  {
             Log.d("MainActivity" , "on click called" )
             progressbar.visibility = View.VISIBLE
 
-            val intent: Intent = Intent(this, TweetActivity::class.java)
-            intent.putExtra("loaction", "Washington D.C.")
-       //     startActivity(intent)
+          //  val intent: Intent = Intent(this, TweetActivity::class.java)
+           // intent.putExtra("loaction", "Washington D.C.")
+            val intent: Intent = Intent(this, MapsActivity::class.java)
+           startActivity(intent)
 
 
             

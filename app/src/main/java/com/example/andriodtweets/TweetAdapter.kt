@@ -10,7 +10,9 @@ import android.widget.TextView
 class TweetAdapter constructor(val tweets: List<Tweet>): RecyclerView.Adapter<TweetAdapter.ViewHolder>() {
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentTweet =tweets[position]
-        holder.handleTextView.text
+        holder.usernameTextView.text = currentTweet.username
+        holder.handleTextView.text = currentTweet.handle
+        holder.contentTextView.text = currentTweet.content
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -26,9 +28,9 @@ class TweetAdapter constructor(val tweets: List<Tweet>): RecyclerView.Adapter<Tw
     }
 
     class ViewHolder constructor(view: View): RecyclerView.ViewHolder(view){
-        private val usernameTestView: TextView = view.findViewById(R.id.username)
+         val usernameTextView: TextView = view.findViewById(R.id.username)
          val handleTextView: TextView = view.findViewById(R.id.handle)
-        private val contentTextView: TextView = view.findViewById(R.id.content)
-        private val iconImageView: ImageView = view.findViewById(R.id.icon)
+         val contentTextView: TextView = view.findViewById(R.id.content)
+         val iconImageView: ImageView = view.findViewById(R.id.icon)
     }
 }
