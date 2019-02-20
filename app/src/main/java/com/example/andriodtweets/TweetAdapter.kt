@@ -23,14 +23,10 @@ class TweetAdapter constructor(val tweets: List<Tweet>): RecyclerView.Adapter<Tw
     override fun getItemCount(): Int = tweets.size
 
 
-    fun onBindViewHolder(holder: TweetActivity, p1: Int) {
-
-    }
-
     class ViewHolder constructor(view: View): RecyclerView.ViewHolder(view){
          val usernameTextView: TextView = view.findViewById(R.id.username)
          val handleTextView: TextView = view.findViewById(R.id.handle)
-         val contentTextView: TextView = view.findViewById(R.id.content)
+         val contentTextView: TextView = view.findViewById(R.id.tweet_content)
          val iconImageView: ImageView = view.findViewById(R.id.icon)
     }
 }

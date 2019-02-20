@@ -57,27 +57,28 @@ class MainActivity : AppCompatActivity()  {
             Log.d("MainActivity" , "on click called" )
             progressbar.visibility = View.VISIBLE
 
-          //  val intent: Intent = Intent(this, TweetActivity::class.java)
-           // intent.putExtra("loaction", "Washington D.C.")
+         //  val intent: Intent = Intent(this, TweetActivity::class.java)
+           // intent.putExtra("location", "Washington D.C.")
             val intent: Intent = Intent(this, MapsActivity::class.java)
            startActivity(intent)
 
 
             
-            AlertDialog.Builder(this).setTitle("Sorry").setMessage("couldnt find it")
-                .setPositiveButton("ok"){
-                    dialog, which ->   Toast.makeText(
-                    this,
-                    "This is a Toast message",
-                    Toast.LENGTH_SHORT
-                ).show()
-                }
-                .show()            
+//            AlertDialog.Builder(this).setTitle("Sorry").setMessage("couldnt find it")
+//                .setPositiveButton("ok"){
+//                    dialog, which ->   Toast.makeText(
+//                    this,
+//                    "This is a Toast message",
+//                    Toast.LENGTH_SHORT
+//                ).show()
+//                }
+//                .show()
         }
     }
 
     override fun onStart() {
         super.onStart()
+        Log.d("MainActivity", "onStart called")
 
     }
 }

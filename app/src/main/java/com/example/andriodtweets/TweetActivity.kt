@@ -10,26 +10,27 @@ import android.support.v7.widget.RecyclerView
 class TweetActivity: AppCompatActivity(){
 
     private lateinit var recyclerView : RecyclerView
-    override fun onCreate(savedInstanceState: Bundle?, persistentState: PersistableBundle?) {
-        super.onCreate(savedInstanceState, persistentState)
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tweet)
 
         recyclerView =findViewById(R.id.recyclerView)
 
         recyclerView.layoutManager= LinearLayoutManager( this)
 
-        recyclerView.adapter =TweetAdapter(tweets = genarateFakeTweet())
+        val tweets = generateFakeTweet()
+        recyclerView.adapter =TweetAdapter(tweets)
 
         val intent: Intent= intent
         val location: String = intent.getStringExtra("location")
       //  title= "Andriod Tweet near {location}"
        // setTitle("Andriod Tweet near" + location)
 
-        title==getString(R.string.tweet_title, location)
+        title=getString(R.string.tweet_title, location)
 
     }
 
-    private fun genarateFakeTweet(): List<Tweet>{
+    private fun generateFakeTweet(): List<Tweet>{
 return listOf(
     Tweet(
         username = "Nick Capurso",
