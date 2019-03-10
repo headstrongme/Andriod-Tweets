@@ -1,9 +1,11 @@
 package com.example.andriodtweets
 
+import android.content.Intent
 import android.location.Address
 import android.location.Geocoder
 import android.support.v7.app.AppCompatActivity
 import android.os.Bundle
+import android.support.v4.content.ContextCompat
 import android.widget.Button
 
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -12,13 +14,19 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Request
+import okhttp3.Response
 import org.jetbrains.anko.doAsync
+import java.io.IOException
 import java.util.*
 
 class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var confirm: Button
+    private var currentAddress: Address? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -28,17 +36,17 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
         val mapFragment = supportFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        confirm.setOnClickListener {
+            if (currentAddress != null) {
+                val intent = Intent(this, TweetActivity::class.java)
+                intent.putExtra("location", currentAddress)
+                startActivity(intent)
+            }
+        }
     }
 
-    /**
-     * Manipulates the map once available.
-     * This callback is triggered when the map is ready to be used.
-     * This is where we can add markers or lines, add listeners or move the camera. In this case,
-     * we just add a marker near Sydney, Australia.
-     * If Google Play services is not installed on the device, the user will be prompted to install
-     * it inside the SupportMapFragment. This method will only be triggered once the user has
-     * installed Google Play services and returned to the app.
-     */
+
     override fun onMapReady(googleMap: GoogleMap) {
         mMap = googleMap
 
@@ -72,7 +80,7 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     mMap.addMarker(
                         MarkerOptions().position(cordinates)
                     )
-
+                    updateConfirmButton(first)
                 }
             }
 
@@ -93,4 +101,23 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
 
         }
     }
+
+    private fun updateConfirmButton(address: Address) {
+        // Update the button color -- need to load the color from resources first
+        val greenColor = ContextCompat.getColor(
+            this, R.color.button_green
+        )
+        val checkIcon = ContextCompat.getDrawable(
+            this, R.drawable.ic_check_black_24dp
+        )
+        confirm.setBackgroundColor(greenColor)
+
+        // Update the left-aligned icon
+        confirm.setCompoundDrawablesWithIntrinsicBounds(checkIcon, null, null, null)
+
+        //Update button text
+        confirm.text = address.getAddressLine(0)
+        confirm.isEnabled = true
+    }
+
 }

@@ -23,7 +23,9 @@
             android:id="@+id/confirm"
             android:layout_marginBottom="8dp"
             android:drawableStart="@drawable/ic_check_black_24dp"
-            android:background="#00C853"
+            android:background="@color/button_red"
+
+
             android:textColor="#FFFFFF"
             app:layout_constraintBottom_toBottomOf="@+id/map"
             android:layout_marginStart="16dp"

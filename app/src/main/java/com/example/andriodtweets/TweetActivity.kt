@@ -1,13 +1,17 @@
 package com.example.andriodtweets
 
 import android.content.Intent
+import android.location.Address
 import android.os.Bundle
 import android.os.PersistableBundle
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.widget.Toast
 
 class TweetActivity: AppCompatActivity(){
+
+    private val twitterManager: TwitterManager = TwitterManager()
 
     private lateinit var recyclerView : RecyclerView
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -16,17 +20,58 @@ class TweetActivity: AppCompatActivity(){
 
         recyclerView =findViewById(R.id.recyclerView)
 
+
         recyclerView.layoutManager= LinearLayoutManager( this)
 
-        val tweets = generateFakeTweet()
-        recyclerView.adapter =TweetAdapter(tweets)
+       // val tweets = generateFakeTweet()
+        //recyclerView.adapter =TweetAdapter(tweets)
 
-        val intent: Intent= intent
-        val location: String = intent.getStringExtra("location")
+       // val intent: Intent= intent
+       // val location: String = intent.getStringExtra("location")
       //  title= "Andriod Tweet near {location}"
        // setTitle("Andriod Tweet near" + location)
 
+
+        val intent: Intent = intent
+        val location: Address = intent.getParcelableExtra("location")
+
         title=getString(R.string.tweet_title, location)
+
+
+
+
+        twitterManager.retrieveOAuthToken(
+            successCallback = { token ->
+
+                twitterManager.retrieveTweets(
+                    oAuthToken = token,
+                    address = location,
+                    successCallback = { tweets ->
+                        runOnUiThread {
+                            // Create the adapter and assign it to the RecyclerView
+                            recyclerView.adapter = TweetAdapter(tweets)
+                        }
+                    },
+                    errorCallback = {
+                        runOnUiThread {
+                            // Runs if we have an error
+                            Toast.makeText(this@TweetActivity, "Error retrieving Tweets", Toast.LENGTH_LONG).show()
+                        }
+                    }
+                )
+
+
+            },
+            errorCallback = { exception ->
+                runOnUiThread {
+                    // Runs if we have an error
+                    Toast.makeText(this@TweetActivity, "Error performing OAuth", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        )
+
+
 
     }
 
