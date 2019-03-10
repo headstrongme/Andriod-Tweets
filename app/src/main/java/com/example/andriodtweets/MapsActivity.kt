@@ -71,11 +71,13 @@ class MapsActivity : AppCompatActivity(), OnMapReadyCallback {
                     5
                 )
 
-                val first = results[0]
-                val buttonTitle = first.getAddressLine(0)
+                val first: Address = results[0]
+               // val buttonTitle = first.getAddressLine(0)
+
+                currentAddress = first
 
                 runOnUiThread {
-                    confirm.text = buttonTitle
+                   // confirm.text = buttonTitle
 
                     mMap.addMarker(
                         MarkerOptions().position(cordinates)
