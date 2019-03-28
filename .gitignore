@@ -12,3 +12,4 @@
 /captures
 .externalNativeBuild
 google_maps_api.xml
+app/google-services.json

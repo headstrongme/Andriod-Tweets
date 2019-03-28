@@ -9,11 +9,15 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.widget.Toast
 
+
 class TweetActivity: AppCompatActivity(){
 
     private val twitterManager: TwitterManager = TwitterManager()
 
     private lateinit var recyclerView : RecyclerView
+    private val tweetList:MutableList<Tweet> = mutableListOf()
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_tweet)
@@ -23,57 +27,70 @@ class TweetActivity: AppCompatActivity(){
 
         recyclerView.layoutManager= LinearLayoutManager( this)
 
-       // val tweets = generateFakeTweet()
-        //recyclerView.adapter =TweetAdapter(tweets)
-
-       // val intent: Intent= intent
-       // val location: String = intent.getStringExtra("location")
-      //  title= "Andriod Tweet near {location}"
-       // setTitle("Andriod Tweet near" + location)
-
-
         val intent: Intent = intent
         val location: Address = intent.getParcelableExtra("location")
 
         title=getString(R.string.tweet_title, location)
 
 
+        if(savedInstanceState!=null){
+
+            val previousTweets =savedInstanceState.getSerializable("TWEETS") as List<Tweet>
+
+            tweetList.addAll(previousTweets)
+            recyclerView.adapter = TweetAdapter(tweetList)
+
+        }
+
+        else{
 
 
-        twitterManager.retrieveOAuthToken(
-            successCallback = { token ->
+            twitterManager.retrieveOAuthToken(
+                successCallback = { token ->
 
-                twitterManager.retrieveTweets(
-                    oAuthToken = token,
-                    address = location,
-                    successCallback = { tweets ->
-                        runOnUiThread {
-                            // Create the adapter and assign it to the RecyclerView
-                            recyclerView.adapter = TweetAdapter(tweets)
+                    twitterManager.retrieveTweets(
+                        oAuthToken = token,
+                        address = location,
+                        successCallback = { tweets ->
+                            runOnUiThread {
+
+                                tweetList.clear()
+                                tweetList.addAll(tweets)
+                                // Create the adapter and assign it to the RecyclerView
+                                recyclerView.adapter = TweetAdapter(tweets)
+                            }
+                        },
+                        errorCallback = {
+                            runOnUiThread {
+                                // Runs if we have an error
+                                Toast.makeText(this@TweetActivity, "Error retrieving Tweets", Toast.LENGTH_LONG).show()
+                            }
                         }
-                    },
-                    errorCallback = {
-                        runOnUiThread {
-                            // Runs if we have an error
-                            Toast.makeText(this@TweetActivity, "Error retrieving Tweets", Toast.LENGTH_LONG).show()
-                        }
+                    )
+
+
+                },
+                errorCallback = { exception ->
+                    runOnUiThread {
+                        // Runs if we have an error
+                        Toast.makeText(this@TweetActivity, "Error performing OAuth", Toast.LENGTH_LONG)
+                            .show()
                     }
-                )
-
-
-            },
-            errorCallback = { exception ->
-                runOnUiThread {
-                    // Runs if we have an error
-                    Toast.makeText(this@TweetActivity, "Error performing OAuth", Toast.LENGTH_LONG)
-                        .show()
                 }
-            }
-        )
+            )
+
+        }
 
 
 
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putSerializable("TWEETS", ArrayList(tweetList))
+    }
+
+
 
     private fun generateFakeTweet(): List<Tweet>{
 return listOf(
