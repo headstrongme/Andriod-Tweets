@@ -4,10 +4,18 @@ import android.content.Intent
 import android.location.Address
 import android.os.Bundle
 import android.os.PersistableBundle
+import android.support.design.widget.FloatingActionButton
 import android.support.v7.app.AppCompatActivity
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
+import android.widget.EditText
 import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import org.jetbrains.anko.email
 
 
 class TweetActivity: AppCompatActivity(){
@@ -16,6 +24,13 @@ class TweetActivity: AppCompatActivity(){
 
     private lateinit var recyclerView : RecyclerView
     private val tweetList:MutableList<Tweet> = mutableListOf()
+
+
+    //todo FB
+    private lateinit var  tweetContent: EditText
+    private lateinit var addTweet: FloatingActionButton
+
+    private lateinit var firebaseDatabase: FirebaseDatabase
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -30,8 +45,29 @@ class TweetActivity: AppCompatActivity(){
         val intent: Intent = intent
         val location: Address = intent.getParcelableExtra("location")
 
+
+        //todo FB
+        val state: String = location.adminArea?:"unknown"
+
         title=getString(R.string.tweet_title, location)
 
+        //todo FB
+        val reference = firebaseDatabase.getReference("tweets/$state")
+
+        addTweet.setOnClickListener{
+            val content= tweetContent.text.toString().trim()
+            val currenUser: String = FirebaseAuth.getInstance().currentUser!!.email!!
+            if(content.isNotEmpty()){
+                val tweet = Tweet(
+                    username = "email",
+                    handle = "email",
+                    content = content,
+                    iconUrl = ""
+                )
+
+                reference.child("Nick's Tweet").setValue(tweet)
+            }
+        }
 
         if(savedInstanceState!=null){
 
@@ -44,6 +80,22 @@ class TweetActivity: AppCompatActivity(){
 
         else{
 
+            reference.addValueEventListener(object : ValueEventListener {
+                override fun onCancelled(databaseError: DatabaseError) {
+
+                }
+                override fun onDataChange(dataSnapshot: DataSnapshot) {
+                    tweetList.clear()
+                    dataSnapshot.children.forEach{ data ->
+                        val tweet=data.getValue(Tweet::class.java)
+                        if(tweet!=null){
+                            tweetList.add(tweet)
+                        }
+
+                    }
+                    recyclerView.adapter= TweetAdapter(tweetList)
+                }
+            })
 
             twitterManager.retrieveOAuthToken(
                 successCallback = { token ->
@@ -80,8 +132,6 @@ class TweetActivity: AppCompatActivity(){
             )
 
         }
-
-
 
     }
 

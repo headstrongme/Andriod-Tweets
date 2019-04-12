@@ -64,7 +64,7 @@ class MainActivity : AppCompatActivity()  {
 
 
             
-//            AlertDialog.Builder(this).setTitle("Sorry").setMessage("couldnt find it")
+//            AlertDialog.Builder(this).setTitle("Sorry").setMessage("couldn't find it")
 //                .setPositiveButton("ok"){
 //                    dialog, which ->   Toast.makeText(
 //                    this,
